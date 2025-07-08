@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מחולל האתרים</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="display-container"></div>
+    <div id="admin-button">+</div>
+
+    <div id="access-prompt" class="overlay" style="display: none;">
+        <div class="modal">
+            <h3>הזן קוד גישה</h3>
+            <input type="password" id="access-code-input" placeholder="****">
+            <button id="submit-code-button">אישור</button>
+            <p id="error-message" style="display: none; color: red;">קוד שגוי</p>
+        </div>
+    </div>
+
+    <div id="admin-panel" class="overlay" style="display: none;">
+        <div class="modal admin-modal">
+            <button id="close-panel-button" class="close-button">&times;</button>
+            <h2>פאנל ניהול</h2>
+            
+            <div id="list-view">
+                <h3>אתרים שמורים</h3>
+                <div class="table-container">
+                    <table id="sites-table">
+                        <thead>
+                            <tr>
+                                <th>שם האתר</th>
+                                <th>נתיב URL</th>
+                                <th>פעולות</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sites-list-body"></tbody>
+                    </table>
+                </div>
+                <button id="show-add-new-button">הוסף אתר חדש</button>
+            </div>
+
+            <div id="editor-view" style="display: none;">
+                <h3 id="editor-title">הוספת אתר חדש</h3>
+                <label for="site-name-input">שם האתר (לתצוגה בניהול):</label>
+                <input type="text" id="site-name-input" placeholder="למשל: דף הנחיתה שלי">
+                
+                <label for="site-slug-input">נתיב URL (באנגלית, ללא רווחים):</label>
+                <input type="text" id="site-slug-input" placeholder="למשל: my-landing-page (אם ריק, ייווצר אוטומטית)">
+
+                <label for="site-code-input">קוד HTML:</label>
+                <textarea id="site-code-input" placeholder="הדבק כאן את קוד ה-HTML..."></textarea>
+
+                <div class="button-group">
+                    <button id="save-site-button">שמור</button>
+                    <button id="run-site-button">הפעל תצוגה מקדימה</button>
+                    <button id="back-to-list-button">חזור לרשימה</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- כל הלוגיקה נמצאת בקובץ script.js. זהו הסקריפט היחיד שאנחנו צריכים. -->
+    <script type="module" src="script.js"></script>
+
+</body>
+</html>

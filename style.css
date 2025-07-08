@@ -1,0 +1,190 @@
+/* =================================
+   Reset and Base Styles
+   ================================= */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    direction: rtl;
+}
+
+#display-container {
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+    border: none;
+    background-color: #f0f0f0;
+}
+
+/* =================================
+   Admin Button (+)
+   ================================= */
+#admin-button {
+    position: fixed;
+    top: 15px;
+    left: 15px; /* עקבי - בפינה השמאלית למעלה */
+    width: 40px;
+    height: 40px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 999; /* חשוב שיהיה מתחת ל-overlay */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* =================================
+   Overlay and Modal Panel
+   ================================= */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* מעל כל שאר התוכן */
+}
+
+.modal {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh; /* מגביל את גובה הפאנל */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    left: 10px; /* עקבי - בפינה השמאלית למעלה של הפאנל */
+    background: none;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    color: #888;
+}
+.close-button:hover {
+    color: #333;
+}
+
+
+/* =================================
+   Admin Panel Content
+   ================================= */
+
+/* --- Table View --- */
+.table-container {
+    width: 100%;
+    overflow-y: auto; /* מאפשר גלילה רק אם התוכן ארוך מדי */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 15px 0;
+}
+
+#sites-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+}
+
+#sites-table th, #sites-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+#sites-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+#sites-table tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+.item-actions button {
+    margin: 0 2px;
+    padding: 5px 8px;
+    font-size: 13px;
+}
+
+/* --- Editor View --- */
+#editor-view {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* מוסיף רווח בין האלמנטים בטופס */
+}
+
+#editor-view label {
+    font-weight: bold;
+    margin-bottom: -10px; /* מקטין רווח מיותר */
+}
+
+#editor-view input[type="text"], 
+#editor-view textarea {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+#site-code-input {
+    min-height: 250px;
+    font-family: "Courier New", Courier, monospace;
+    resize: vertical;
+}
+
+/* --- Buttons --- */
+button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#back-to-list-button {
+    background-color: #6c757d;
+}
+#back-to-list-button:hover {
+    background-color: #5a6268;
+}
+
+.delete-button {
+    background-color: #dc3545;
+}
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+.button-group {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap; /* מאפשר לכפתורים לרדת שורה במסכים קטנים */
+    gap: 10px;
+}
