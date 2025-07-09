@@ -91,6 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadPageFromPath = () => {
         const path = window.location.pathname;
         const pageKey = path.substring(1);
+        
+        // Show/hide admin button based on path
+        adminButton.style.display = pageKey ? 'none' : 'block';
+        
         if (pageKey) {
             get(child(sitesRef, pageKey)).then((snapshot) => {
                 if (snapshot.exists()) {
