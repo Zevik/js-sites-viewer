@@ -51,7 +51,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // פונקציות עזר
     const renderHtml = (htmlContent) => {
+        // Extract base URL from the HTML content if it exists
+        const baseMatch = htmlContent.match(/<base[^>]*href=["']([^"']+)["'][^>]*>/i);
+        const existingBaseUrl = baseMatch ? baseMatch[1] : null;
+
+        // Create a temporary container to parse the HTML
+        const tempContainer = document.createElement('div');
+        tempContainer.innerHTML = htmlContent;
+
+        // Handle base URL
+        let baseUrl = existingBaseUrl;
+        if (!baseUrl) {
+            // Try to find the first external resource and extract its base URL
+            const firstResource = tempContainer.querySelector('img[src^="http"], script[src^="http"], link[href^="http"]');
+            if (firstResource) {
+                const url = new URL(firstResource.src || firstResource.href);
+                baseUrl = url.origin + url.pathname.substring(0, url.pathname.lastIndexOf('/') + 1);
+            }
+        }
+
+        // If we found a base URL, add or update the base tag
+        if (baseUrl && !baseMatch) {
+            const baseTag = document.createElement('base');
+            baseTag.href = baseUrl;
+            document.head.appendChild(baseTag);
+        }
+
+        // Update the display container
         displayContainer.innerHTML = htmlContent;
+
+        // Handle scripts
         const scripts = displayContainer.getElementsByTagName('script');
         Array.from(scripts).forEach(oldScript => {
             const newScript = document.createElement('script');
@@ -59,6 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
             newScript.appendChild(document.createTextNode(oldScript.innerHTML));
             oldScript.parentNode.replaceChild(newScript, oldScript);
         });
+
+        // Clean up base tag when navigating away
+        return () => {
+            const baseTag = document.querySelector('base');
+            if (baseTag) {
+                baseTag.remove();
+            }
+        };
     };
 
     const hideAllPanels = () => {
@@ -95,6 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show/hide admin button based on path
         adminButton.style.display = pageKey ? 'none' : 'block';
         
+        // Clean up any existing base tag
+        const existingBase = document.querySelector('base');
+        if (existingBase) {
+            existingBase.remove();
+        }
+
         if (pageKey) {
             get(child(sitesRef, pageKey)).then((snapshot) => {
                 if (snapshot.exists()) {
