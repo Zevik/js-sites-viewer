@@ -46,16 +46,22 @@ let cleanupFunction = null;
 // אתחול האפליקציה
 document.addEventListener('DOMContentLoaded', function() {
     console.log('HTML Viewer System - Starting...');
-    
+
     // קביעת event listeners
     setupEventListeners();
-    
+
     // טעינת הדף הראשוני
-    loadPageFromPath();
-    
+    const path = window.location.pathname;
+    const siteKey = path.substring(1);
+    if (path === '/' || path === '/index.html' || !siteKey) {
+        showHomepage();
+    } else {
+        loadPageFromPath();
+    }
+
     // בדיקת סיסמה שמורה
     checkSavedPassword();
-    
+
     console.log('System initialized successfully');
 });
 
