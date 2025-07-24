@@ -1,13 +1,29 @@
 [build]
   publish = "."
   command = """
-    sed -i 's/__FIREBASE_API_KEY__/'$FIREBASE_API_KEY'/g' script.js &&
-    sed -i 's/__FIREBASE_AUTH_DOMAIN__/'$FIREBASE_AUTH_DOMAIN'/g' script.js &&
+    # Create backup of original script
+    cp script.js script.js.backup &&
+    
+    # Replace Firebase configuration with safer method using | delimiter
+    sed -i 's|__FIREBASE_API_KEY__|'$FIREBASE_API_KEY'|g' script.js &&
+    sed -i 's|__FIREBASE_AUTH_DOMAIN__|'$FIREBASE_AUTH_DOMAIN'|g' script.js &&
     sed -i 's|__FIREBASE_DATABASE_URL__|'$FIREBASE_DATABASE_URL'|g' script.js &&
-    sed -i 's/__FIREBASE_PROJECT_ID__/'$FIREBASE_PROJECT_ID'/g' script.js &&
-    sed -i 's/__FIREBASE_STORAGE_BUCKET__/'$FIREBASE_STORAGE_BUCKET'/g' script.js &&
-    sed -i 's/__FIREBASE_MESSAGING_SENDER_ID__/'$FIREBASE_MESSAGING_SENDER_ID'/g' script.js &&
-    sed -i 's|__FIREBASE_APP_ID__|'$FIREBASE_APP_ID'|g' script.js
+    sed -i 's|__FIREBASE_PROJECT_ID__|'$FIREBASE_PROJECT_ID'|g' script.js &&
+    sed -i 's|__FIREBASE_STORAGE_BUCKET__|'$FIREBASE_STORAGE_BUCKET'|g' script.js &&
+    sed -i 's|__FIREBASE_MESSAGING_SENDER_ID__|'$FIREBASE_MESSAGING_SENDER_ID'|g' script.js &&
+    sed -i 's|__FIREBASE_APP_ID__|'$FIREBASE_APP_ID'|g' script.js &&
+    sed -i 's|__ADMIN_PASSWORD__|'$ADMIN_PASSWORD'|g' script.js &&
+    
+    # Verify replacements worked
+    echo "✅ Environment variables replacement completed" &&
+    echo "Checking for remaining placeholders..." &&
+    if grep -q "__.*__" script.js; then
+      echo "❌ Warning: Some placeholders were not replaced!"
+      grep "__.*__" script.js
+      exit 1
+    else
+      echo "✅ All placeholders successfully replaced"
+    fi
   """
 
 [[redirects]]
