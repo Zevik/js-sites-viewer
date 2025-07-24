@@ -39,7 +39,7 @@ if (!isFirebaseConfigValid(firebaseConfig)) {
 }
 
 // קבועים ומשתנים גלובליים
-let ADMIN_PASSWORD = null; // הסיסמה תיקבע ע"י המשתמש ותישמר מקומית
+const ADMIN_PASSWORD = "__ADMIN_PASSWORD__"; // יוגדר בנטפליי
 let currentEditingKey = null;
 let cleanupFunction = null;
 
@@ -129,9 +129,13 @@ function checkSavedPassword() {
         const savedPassword = localStorage.getItem('admin_access_code');
         if (savedPassword) {
             const decodedPassword = atob(savedPassword);
-            ADMIN_PASSWORD = decodedPassword;
-            console.log('Valid saved password found');
-            return true;
+            if (decodedPassword === ADMIN_PASSWORD) {
+                console.log('Valid saved password found');
+                return true;
+            } else {
+                localStorage.removeItem('admin_access_code');
+                console.log('Invalid saved password removed');
+            }
         }
     } catch (error) {
         console.error('Error checking saved password:', error);
@@ -162,16 +166,8 @@ function closeAccessModal() {
 
 function authenticate() {
     const password = document.getElementById('accessCodeInput').value;
-    if (!ADMIN_PASSWORD) {
-        // הגדרת סיסמה ראשונה
-        ADMIN_PASSWORD = password;
-        localStorage.setItem('admin_access_code', btoa(password));
-        closeAccessModal();
-        openAdminPanel();
-        alert('הסיסמה נשמרה בהצלחה!');
-        console.log('Password set and saved locally');
-    } else if (password === ADMIN_PASSWORD) {
-        // סיסמה נכונה
+    if (password === ADMIN_PASSWORD) {
+        // סיסמה נכונה - שמור ב-localStorage
         localStorage.setItem('admin_access_code', btoa(password));
         closeAccessModal();
         openAdminPanel();
@@ -186,9 +182,7 @@ function authenticate() {
 
 function logout() {
     localStorage.removeItem('admin_access_code');
-    ADMIN_PASSWORD = null;
     closeAdminPanel();
-    promptSetPassword();
     console.log('User logged out');
 }
 
@@ -562,12 +556,7 @@ function showHomepage() {
 
 // פונקציות עזר נוספות
 // פונקציה לבקשת הגדרת סיסמה ראשונה
-function promptSetPassword() {
-    setTimeout(() => {
-        alert('הגדר סיסמה ראשונה למערכת. תישמר רק מקומית בדפדפן שלך.');
-        showAccessModal();
-    }, 500);
-}
+// לא נדרש יותר promptSetPassword - הסיסמה מוגדרת בנטפליי
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
