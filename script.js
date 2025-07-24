@@ -11,27 +11,40 @@ import {
     push 
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-// Firebase Configuration with Environment Variables
+// Firebase Configuration - יוחלפו בזמן BUILD באמצעות Environment Variables
 const firebaseConfig = {
-    apiKey: "AIzaSyC-2JIW09oY4SpbZwkfzfzhLb-7nlCTTvQ",
-    authDomain: "sites-builder-ad132.firebaseapp.com",
-    databaseURL: "https://sites-builder-ad132-default-rtdb.firebaseio.com",
-    projectId: "sites-builder-ad132",
-    storageBucket: "sites-builder-ad132.firebasestorage.app",
-    messagingSenderId: "1041141224430",
-    appId: "1:1041141224430:web:adff016707d76e297274ff"
+    apiKey: "__FIREBASE_API_KEY__",
+    authDomain: "__FIREBASE_AUTH_DOMAIN__",
+    databaseURL: "__FIREBASE_DATABASE_URL__",
+    projectId: "__FIREBASE_PROJECT_ID__",
+    storageBucket: "__FIREBASE_STORAGE_BUCKET__",
+    messagingSenderId: "__FIREBASE_MESSAGING_SENDER_ID__",
+    appId: "__FIREBASE_APP_ID__"
 };
 
-// Check Firebase config validity
+// בדיקת תקינות הגדרות Firebase
 function isFirebaseConfigValid(config) {
-    return config && typeof config.databaseURL === 'string' && config.databaseURL.startsWith('https://') && !config.databaseURL.includes('<YOUR');
+    return config && 
+           typeof config.databaseURL === 'string' && 
+           config.databaseURL.startsWith('https://') && 
+           !config.databaseURL.includes('__') &&  // וידוא שלא נשארו placeholders
+           !config.apiKey.includes('__');
 }
 
 let app, database;
 if (!isFirebaseConfigValid(firebaseConfig)) {
     document.addEventListener('DOMContentLoaded', function() {
+        console.error('Firebase configuration invalid or missing');
         alert('שגיאת מערכת: הגדרות Firebase חסרות או לא תקינות. יש להגדיר את משתני הסביבה לפני השימוש באתר.');
-        document.body.innerHTML = '<div style="color: red; font-size: 1.5em; text-align: center; margin-top: 50px;">שגיאת מערכת: הגדרות Firebase חסרות או לא תקינות.<br>יש להגדיר את משתני הסביבה לפני השימוש באתר.</div>';
+        document.body.innerHTML = `
+            <div style="color: red; font-size: 1.5em; text-align: center; margin-top: 50px; padding: 20px;">
+                🚨 שגיאת מערכת<br><br>
+                הגדרות Firebase חסרות או לא תקינות.<br>
+                יש להגדיר את משתני הסביבה בנטליפיי לפני השימוש באתר.
+                <br><br>
+                <small>Environment variables need to be configured in Netlify</small>
+            </div>
+        `;
     });
 } else {
     app = initializeApp(firebaseConfig);
@@ -39,13 +52,20 @@ if (!isFirebaseConfigValid(firebaseConfig)) {
 }
 
 // קבועים ומשתנים גלובליים
-const ADMIN_PASSWORD = "__ADMIN_PASSWORD__"; // יוגדר בנטפליי
+const ADMIN_PASSWORD = "__ADMIN_PASSWORD__"; // יוחלף בזמן BUILD
 let currentEditingKey = null;
 let cleanupFunction = null;
 
 // אתחול האפליקציה
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('HTML Viewer System - Starting...');
+    console.log('HTML Viewer System - Starting with secure configuration...');
+
+    // וידוא שהסיסמה הוחלפה
+    if (ADMIN_PASSWORD.includes('__')) {
+        console.error('Admin password not configured');
+        alert('שגיאת אבטחה: סיסמת מנהל לא הוגדרה. פנה למנהל המערכת.');
+        return;
+    }
 
     // קביעת event listeners
     setupEventListeners();
@@ -61,12 +81,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // בדיקת סיסמה שמורה
     checkSavedPassword();
-    // אם אין סיסמה שמורה, בקש מהמשתמש להגדיר סיסמה
-    if (!ADMIN_PASSWORD) {
-        promptSetPassword();
-    }
 
-    console.log('System initialized successfully');
+    console.log('System initialized successfully with secure configuration');
 });
 
 // הגדרת event listeners
@@ -594,8 +610,6 @@ function showHomepage() {
 }
 
 // פונקציות עזר נוספות
-// פונקציה לבקשת הגדרת סיסמה ראשונה
-// לא נדרש יותר promptSetPassword - הסיסמה מוגדרת בנטפליי
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
@@ -662,4 +676,4 @@ window.viewSite = viewSite;
 window.loadSitesList = loadSitesList;
 
 // התחלה
-console.log('HTML Viewer System - Script loaded with Firebase');
+console.log('HTML Viewer System - Script loaded with SECURE Firebase configuration');
