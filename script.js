@@ -55,16 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const siteKey = path.substring(1);
     if (path === '/' || path === '/index.html' || !siteKey) {
         showHomepage();
-        // הוספת שדה סיסמה לדף הבית
-        setTimeout(() => {
-            const homepageCard = document.querySelector('.homepage-card, .homepage-content, .homepage');
-            if (homepageCard && !document.getElementById('homepagePasswordInput')) {
-                const passwordDiv = document.createElement('div');
-                passwordDiv.style.marginTop = '20px';
-                passwordDiv.innerHTML = `<input type="password" id="homepagePasswordInput" placeholder="הכנס סיסמת מנהל" style="padding:10px;font-size:1em;width:220px;border-radius:8px;border:1px solid #ccc;">`;
-                homepageCard.appendChild(passwordDiv);
-            }
-        }, 500);
     } else {
         loadPageFromPath();
     }
