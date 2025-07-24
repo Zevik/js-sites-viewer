@@ -39,7 +39,7 @@ if (!isFirebaseConfigValid(firebaseConfig)) {
 }
 
 // קבועים ומשתנים גלובליים
-const ADMIN_PASSWORD = "2616";
+const ADMIN_PASSWORD = "__ADMIN_PASSWORD__";
 let currentEditingKey = null;
 let cleanupFunction = null;
 
