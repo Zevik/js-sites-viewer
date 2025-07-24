@@ -70,20 +70,49 @@ document.addEventListener('DOMContentLoaded', function() {
     // קביעת event listeners
     setupEventListeners();
 
-    // טעינת הדף הראשוני
-    const path = window.location.pathname;
-    const siteKey = path.substring(1);
-    if (path === '/' || path === '/index.html' || !siteKey) {
-        showHomepage();
-    } else {
-        loadPageFromPath();
-    }
+    // טעינת הדף הראשוני - ללא הבהוב!
+    loadInitialPage();
 
     // בדיקת סיסמה שמורה
     checkSavedPassword();
 
     console.log('System initialized successfully with secure configuration');
 });
+
+// טעינה ראשונית נכונה - ללא הבהוב דף הבית
+function loadInitialPage() {
+    const path = window.location.pathname;
+    const siteKey = path.substring(1);
+    
+    if (path === '/' || path === '/index.html' || !siteKey) {
+        // רק עכשיו נציג את דף הבית
+        showHomepage();
+    } else if (path === '/admin' || path === '/manage') {
+        // נתיב נסתר לכניסה למנהל
+        showHomepage(); // הציג דף הבית קודם
+        setTimeout(() => {
+            openAdminAccess();
+            history.replaceState(null, '', '/');
+        }, 100);
+    } else {
+        // נתיב אתר ספציפי - טען ישירות ללא הצגת דף הבית
+        showLoadingState();
+        loadSiteFromKey(siteKey);
+    }
+}
+
+// הצגת מצב טעינה במקום דף הבית
+function showLoadingState() {
+    document.getElementById('homepage').classList.add('hidden');
+    document.getElementById('siteView').classList.remove('hidden');
+    
+    document.getElementById('siteView').innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column;">
+            <div style="font-size: 2em; margin-bottom: 20px;">⏳</div>
+            <div style="font-size: 1.2em; color: #666;">טוען תוכן...</div>
+        </div>
+    `;
+}
 
 // הגדרת event listeners
 function setupEventListeners() {
@@ -496,7 +525,7 @@ async function loadSiteFromKey(siteKey) {
     }
 }
 
-// פונקציות ניווט מתקדמות
+// פונקציות ניווט מתקדמות - עם תיקון ההבהוב
 function loadPageFromPath() {
     const path = window.location.pathname;
     
@@ -508,10 +537,10 @@ function loadPageFromPath() {
         // החזר לדף הבית אחרי הכניסה
         history.replaceState(null, '', '/');
     } else {
-        // נתיב אתר ספציפי
-        const siteKey = path.substring(1); // הסר את ה-/ הראשון
+        // נתיב אתר ספציפי - ללא הבהוב!
+        const siteKey = path.substring(1);
         if (siteKey) {
-            // אל תציג את דף הבית לפני טעינת האתר
+            showLoadingState(); // הציג loading במקום דף הבית
             loadSiteFromKey(siteKey);
         } else {
             showHomepage();
@@ -597,7 +626,7 @@ function showHomepage() {
     document.getElementById('homepage').classList.remove('hidden');
     document.getElementById('siteView').classList.add('hidden');
 
-    // עדכון URL
+    // עדכון URL רק אם צריך
     if (window.location.pathname !== '/') {
         history.pushState(null, '', '/');
     }
@@ -674,6 +703,7 @@ window.editSite = editSite;
 window.deleteSite = deleteSite;
 window.viewSite = viewSite;
 window.loadSitesList = loadSitesList;
+window.showHomepage = showHomepage;
 
 // התחלה
-console.log('HTML Viewer System - Script loaded with SECURE Firebase configuration');
+console.log('HTML Viewer System - Script loaded with SECURE Firebase configuration and NO HOMEPAGE FLICKER');
