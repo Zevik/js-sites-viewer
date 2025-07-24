@@ -551,17 +551,48 @@ function executeScripts() {
 function showHomepage() {
     document.getElementById('homepage').classList.remove('hidden');
     document.getElementById('siteView').classList.add('hidden');
-    
+
     // עדכון URL
     if (window.location.pathname !== '/') {
         history.pushState(null, '', '/');
     }
-    
+
     // עדכון כותרת
     document.title = 'מערכת ניהול אתרי HTML';
-    
+
     // ניקוי תוכן קודם
     cleanupPreviousContent();
+
+    // הוספת שדה סיסמה וכפתור התחלה לדף הבית אם לא קיים
+    setTimeout(() => {
+        const homepageCard = document.querySelector('.homepage-card, .homepage-content, .homepage');
+        if (homepageCard) {
+            if (!document.getElementById('homepagePasswordInput')) {
+                const passwordDiv = document.createElement('div');
+                passwordDiv.style.marginTop = '20px';
+                passwordDiv.innerHTML = `<input type="password" id="homepagePasswordInput" placeholder="הכנס סיסמת מנהל" style="padding:10px;font-size:1em;width:220px;border-radius:8px;border:1px solid #ccc;">`;
+                homepageCard.appendChild(passwordDiv);
+            }
+            // העבר את כפתור "התחל עכשיו" מתחת לשדה הסיסמה
+            const startBtn = document.getElementById('startButton');
+            const pwdInput = document.getElementById('homepagePasswordInput');
+            if (startBtn && pwdInput && startBtn.nextSibling !== pwdInput) {
+                homepageCard.insertBefore(pwdInput, startBtn.nextSibling);
+            }
+            // חבר את כפתור "התחל עכשיו" לשימוש בסיסמה מהשדה
+            startBtn.onclick = function() {
+                const pwd = pwdInput.value;
+                document.getElementById('accessCodeInput').value = pwd;
+                authenticate();
+            };
+            // אפשר גם Enter בשדה הסיסמה
+            pwdInput.onkeypress = function(e) {
+                if (e.key === 'Enter') {
+                    startBtn.click();
+                }
+            };
+        }
+    }, 500);
 }
 
 // פונקציות עזר נוספות
