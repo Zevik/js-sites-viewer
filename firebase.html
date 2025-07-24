@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; 
+                   img-src * data: blob:; 
+                   media-src * data: blob:; 
+                   font-src * data:;">
+    <title>מערכת ניהול אתרי HTML - Firebase</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- מיכל תוכן ראשי -->
+    <div id="app">
+        <!-- דף הבית -->
+        <div id="homepage" class="page">
+            <div class="hero-section">
+                <h1>מערכת ניהול ותצוגת אתרי HTML</h1>
+                <p>פלטפורמה גמישה לאירוח תוכן HTML דינמי עם תמיכה בספריות JavaScript מודרניות</p>
+                <button id="startButton" class="cta-button">התחל עכשיו</button>
+                <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
+                    <strong>גרסת Firebase:</strong> נתונים נשמרים בפיירבייס אמיתי
+                    <br><strong>סיסמה:</strong> 2616
+                </p>
+            </div>
+        </div>
+        
+        <!-- מיכל לתצוגת אתרים -->
+        <div id="siteView" class="page hidden">
+            <!-- כאן יטען התוכן הדינמי -->
+        </div>
+    </div>
+    
+    <!-- מודל אימות -->
+    <div id="accessModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>כניסה לפאנל ניהול</h2>
+            <form id="accessForm">
+                <div class="input-group">
+                    <input type="password" id="accessCodeInput" placeholder="הזן סיסמת גישה" autocomplete="current-password">
+                    <button type="submit" id="submitCodeButton">כניסה</button>
+                </div>
+            </form>
+            <div id="errorMessage" class="error-message hidden"></div>
+        </div>
+    </div>
+    
+    <!-- פאנל ניהול -->
+    <div id="adminPanel" class="modal hidden">
+        <div class="panel-content">
+            <!-- תצוגת רשימה -->
+            <div id="listView" class="panel-view">
+                <div class="panel-header">
+                    <h2>אתרים שמורים</h2>
+                    <div class="panel-actions">
+                        <button id="addSiteButton" class="btn-primary">הוסף אתר חדש</button>
+                        <button id="logoutButton" class="btn-secondary">התנתק</button>
+                        <button id="closePanelButton" class="btn-close">×</button>
+                    </div>
+                </div>
+                <div id="sitesTable" class="sites-table">
+                    <!-- כאן תטען טבלת האתרים -->
+                </div>
+            </div>
+            
+            <!-- תצוגת עריכה/הוספה -->
+            <div id="editView" class="panel-view hidden">
+                <div class="panel-header">
+                    <h2 id="editTitle">הוסף אתר חדש</h2>
+                    <button id="backToListButton" class="btn-secondary">חזור לרשימה</button>
+                </div>
+                <form id="siteForm" class="site-form">
+                    <div class="form-group">
+                        <label for="siteName">שם האתר:</label>
+                        <input type="text" id="siteName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="siteSlug">נתיב URL (אופציונלי):</label>
+                        <input type="text" id="siteSlug" placeholder="יוצר אוטומטית מהשם">
+                    </div>
+                    <div class="form-group">
+                        <label for="siteHtml">קוד HTML:</label>
+                        <textarea id="siteHtml" required placeholder="הזן את קוד ה-HTML כאן..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" id="saveSiteButton" class="btn-primary">שמור</button>
+                        <button type="button" id="previewButton" class="btn-secondary">תצוגה מקדימה</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase Development Version -->
+    <script type="module" src="script-dev.js"></script>
+</body>
+</html>
