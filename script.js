@@ -448,6 +448,7 @@ function loadPageFromPath() {
         // נתיב אתר ספציפי
         const siteKey = path.substring(1); // הסר את ה-/ הראשון
         if (siteKey) {
+            // אל תציג את דף הבית לפני טעינת האתר
             loadSiteFromKey(siteKey);
         } else {
             showHomepage();
