@@ -56,7 +56,11 @@ const ADMIN_PASSWORD = "__ADMIN_PASSWORD__"; // יוחלף בזמן BUILD
 let currentEditingKey = null;
 let cleanupFunction = null;
 
-// אתחול האפליקציה
+// *** תיקון הבהוב דף הבית - התחלה ***
+// משתנה לעקוב אחרי מצב האתחול
+let isInitialized = false;
+
+// אתחול האפליקציה - עם תיקון הבהוב
 document.addEventListener('DOMContentLoaded', function() {
     console.log('HTML Viewer System - Starting with secure configuration...');
 
@@ -67,42 +71,60 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    // *** תיקון מפתח: הסתר את כל התוכן עד שהאתחול יסתיים ***
+    hideAllContent();
+
     // קביעת event listeners
     setupEventListeners();
 
-    // טעינת הדף הראשוני - ללא הבהוב!
-    loadInitialPage();
+    // *** התיקון העיקרי: טעינה ראשונית נכונה - ללא הבהוב! ***
+    loadInitialPageWithoutFlash();
 
     // בדיקת סיסמה שמורה
     checkSavedPassword();
 
-    console.log('System initialized successfully with secure configuration');
+    // סיום האתחול
+    isInitialized = true;
+
+    console.log('System initialized successfully with secure configuration and NO FLASHING');
 });
 
-// טעינה ראשונית נכונה - ללא הבהוב דף הבית
-function loadInitialPage() {
+// *** פונקציה חדשה: הסתרת כל התוכן בהתחלה ***
+function hideAllContent() {
+    // הסתר את דף הבית וה-siteView עד שהניתוב יוחלט
+    document.getElementById('homepage').classList.add('hidden');
+    document.getElementById('siteView').classList.add('hidden');
+}
+
+// *** פונקציה מתוקנת: טעינה ראשונית ללא הבהוב ***
+function loadInitialPageWithoutFlash() {
     const path = window.location.pathname;
     const siteKey = path.substring(1);
     
+    console.log('Loading initial page for path:', path);
+    
+    // בדוק מה הנתיב ותחליט מה להציג מיד - ללא הבהוב
     if (path === '/' || path === '/index.html' || !siteKey) {
-        // רק עכשיו נציג את דף הבית
+        // נתיב דף הבית - הציג ישירות
         showHomepage();
     } else if (path === '/admin' || path === '/manage') {
         // נתיב נסתר לכניסה למנהל
-        showHomepage(); // הציג דף הבית קודם
+        // *** תיקון: אל תציג דף הבית! פתח ישירות את המודל ***
+        showHomepage(); // הציג דף הבית כבסיס
         setTimeout(() => {
             openAdminAccess();
             history.replaceState(null, '', '/');
         }, 100);
     } else {
-        // נתיב אתר ספציפי - טען ישירות ללא הצגת דף הבית
-        showLoadingState();
+        // *** התיקון החשוב: נתיב אתר ספציפי - הציג loading ישירות ***
+        showSiteLoadingState();
         loadSiteFromKey(siteKey);
     }
 }
 
-// הצגת מצב טעינה במקום דף הבית
-function showLoadingState() {
+// *** פונקציה חדשה: הצגת מצב טעינה לאתר ספציפי ***
+function showSiteLoadingState() {
+    // הסתר דף הבית והציג את ה-siteView עם מצב טעינה
     document.getElementById('homepage').classList.add('hidden');
     document.getElementById('siteView').classList.remove('hidden');
     
@@ -113,6 +135,7 @@ function showLoadingState() {
         </div>
     `;
 }
+// *** תיקון הבהוב דף הבית - סיום ***
 
 // הגדרת event listeners
 function setupEventListeners() {
@@ -162,8 +185,12 @@ function setupEventListeners() {
     document.getElementById('siteForm').addEventListener('submit', saveSite);
     document.getElementById('previewButton').addEventListener('click', previewSite);
     
-    // ניווט עם History API
-    window.addEventListener('popstate', loadPageFromPath);
+    // *** תיקון: ניווט עם History API - רק אחרי אתחול ***
+    window.addEventListener('popstate', function() {
+        if (isInitialized) {
+            loadPageFromPath();
+        }
+    });
     
     // סגירת מודלים בלחיצה על הרקע
     document.getElementById('accessModal').addEventListener('click', function(e) {
@@ -525,7 +552,7 @@ async function loadSiteFromKey(siteKey) {
     }
 }
 
-// פונקציות ניווט מתקדמות - עם תיקון ההבהוב
+// *** פונקציות ניווט מתקנות - עם מניעת הבהוב ***
 function loadPageFromPath() {
     const path = window.location.pathname;
     
@@ -540,7 +567,7 @@ function loadPageFromPath() {
         // נתיב אתר ספציפי - ללא הבהוב!
         const siteKey = path.substring(1);
         if (siteKey) {
-            showLoadingState(); // הציג loading במקום דף הבית
+            showSiteLoadingState(); // הציג loading במקום דף הבית
             loadSiteFromKey(siteKey);
         } else {
             showHomepage();
